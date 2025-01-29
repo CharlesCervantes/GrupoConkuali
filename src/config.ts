@@ -9,28 +9,32 @@ import type {
 } from "./types/config";
 
 export const identity: Identity = {
-  name: "Tim Witzdam",
-  logo: "/logo.webp",
-  email: "tim@witzdam.com",
+  name: "Grupo Conkuali",
+  logo: "/LogoConkuali.jpeg",
+  email: "sergio@grupoconkuali.mx",
 };
 
 export const navBarLinks: NavBarLink[] = [
   {
-    title: "Home",
+    title: "Inicio",
     url: "/",
   },
   {
-    title: "About",
-    url: "/about",
+    title: "Nosotros",
+    url: "/nosotros",
   },
   {
-    title: "Projects",
-    url: "/projects",
+    title: "Proyectos",
+    url: "/proyectos",
   },
   {
-    title: "Blog",
-    url: "/blog",
+    title: "Servicios",
+    url: "/servicios",
   },
+  {
+    title: "Contacto",
+    url: "/contacto"
+  }
 ];
 
 export const socialLinks: SocialLink[] = [
@@ -57,7 +61,7 @@ export const homePageContent: HomePageContent = {
   },
   role: "Student & Software Developer",
   description:
-    "I'm Tim Witzdam, a full time student from Germany who also loves building cool things using code.",
+    "Componente Home",
   socialLinks: socialLinks,
   links: [
     {
