@@ -1,0 +1,160 @@
+---
+export interface Props {
+    id?: string;
+}
+
+const {id} = Astro.props
+---
+
+<section id={id} class="hero">
+    <div class="hero-container">
+      <div class="hero-subcontainer">
+        <div class="page-title">
+          <h1>Nuestra empresa</h1>
+        </div>
+  
+        <div class="hero-content">
+          <p>
+            <strong>GRUPO CONKUALI</strong> es una constructora de Monterrey, Nuevo León, especializada en proyectos residenciales, 
+            comerciales, industriales y de mantenimiento. Garantizamos alta calidad y soluciones que cumplen con las 
+            necesidades de clientes e inversionistas.
+          </p>
+  
+          <div class="hero-button">
+            <a href="/nosotros" class="cta-button">CONSTRUCTORA</a>
+          </div>
+        </div>
+      </div>
+  
+      <div class="container-video">
+        <video autoplay loop muted playsinline class="hero-video">
+          <source src="/VideoVertical.mp4" type="video/mp4" />
+        </video>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+    /* ------------------------------------------------- 🔹 PAGINA PRINCIPAL ------------------------------------ */
+    .hero {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    background-image: url('/fondoCasa.png');
+    /* background-image: url('/FondoEdificios.webp'); */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
+    align-items: flex-start;
+    padding: 20px;
+    }
+
+    .hero-container {
+    display: flex;
+    flex-direction: column; /* Para móviles, primero el texto, luego el video */
+    align-items: center;
+    max-width: 1280px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 24px;
+    }
+
+    .page-title {
+        width: 100%;
+        text-align: left;
+        font-size: 2.2rem;
+        font-weight: bold;
+        color: white;
+        margin-top: 120px;
+        text-transform: uppercase;
+    }
+
+    .hero-content {
+    max-width: 800px;
+    border-radius: 10px;
+    text-align: left;
+    }
+
+    .hero-button {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start; 
+    margin-top: 20px;
+    }
+
+    .cta-button {
+    display: inline-block;
+    background: #3d4f53;
+    color: white;
+    padding: 12px 24px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    }
+
+    .cta-button:hover {
+    background: black;
+    color: white;
+    transition: 0.3s;
+    }
+
+    .container-video {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    margin-top: 50px;
+    }
+
+    .hero-video {
+    width: 60%;
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    object-fit: cover;
+    }
+
+    /* 🔹 RESPONSIVO ESCRITORIO */
+    @media (min-width: 768px) {
+
+    .hero {
+        justify-content: center;
+    }
+
+    .hero-container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    }
+
+    .page-title, .hero-content {
+        flex: 1;
+        text-align: left;
+        max-width: 600px; 
+    }
+
+    .container-video {
+    flex: 0.5;
+    display: flex;
+    justify-content: flex-end;
+    }
+
+    .hero-video {
+    width: 100%;
+    max-width: 350px;
+    height: auto;
+    border-radius: 10px;
+    object-fit: cover;
+    }
+
+    .hero-button {
+        justify-content: flex-start;
+    }
+
+    }
+  </style>
