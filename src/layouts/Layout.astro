@@ -3,7 +3,6 @@ import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
 import { navBarLinks, identity } from "../config";
 import type { SEOInfo } from "../types/config";
-
 interface Props {
   seo: SEOInfo;
 }
@@ -123,9 +122,10 @@ const { seo } = Astro.props;
     </header>
 
     <!-- 🔹 CONTENIDO PRINCIPAL -->
-    <main class="content">
-      <slot />
-    </main>
+      <main class="content">
+        <slot />
+      </main>
+    
 
     <!-- 🔹 FOOTER -->
     <footer class="footer">

@@ -3,6 +3,7 @@ import type {
   SocialLink,
   Identity,
   HomePageContent,
+  ProjectPageContent
 } from "./types/config";
 
 // 🔹 Identidad del sitio
@@ -73,3 +74,34 @@ export const homePageContent: HomePageContent = {
     },
   ],
 };
+
+// Projects (/projects)
+export const projectsPageContent: ProjectPageContent = {
+  seo: {
+    title: "Projects | Tim Witzdam",
+    description: "Check out what I've been working on.",
+    image: identity.logo,
+  },
+  subtitle: "Check out what I've been working on.",
+  projects: [
+    {
+      title: "Proyecto 1",
+      description: "Descripción del proyecto.",
+      images: [
+        "/fondoCasa.png",
+        "/FondoEdificios.webp",
+      ], // Ahora es un array
+      year: "2024",
+    },
+    {
+      title: "Proyecto 2",
+      description: "Descripción del segundo proyecto.",
+      images: [
+        "/proyectos/proyecto2-1.jpg",
+        "/proyectos/proyecto2-2.jpg"
+      ],
+      year: "2023",
+    }
+  ],
+};
+

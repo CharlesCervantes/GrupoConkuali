@@ -1,36 +1,185 @@
 ---
 import { Image } from "astro:assets";
 import type { Project } from "../types/config";
-import {marked} from "marked"
+import { marked } from "marked";
+import { Carousel } from '@mantine/carousel'
 
 type Props = Project;
 
-const { title, description, image, year, url } = Astro.props;
+const { title, description, images, year, url } = Astro.props;
 
-const htmlDescription = marked.parse(description)
+const htmlDescription = marked.parse(description);
 ---
+
+<script>
+  let currentIndex = 0;
+  let images: any[] | NodeListOf<Element> = [];
+
+  document.addEventListener("DOMContentLoaded", () => {
+    images = document.querySelectorAll(".carousel-image");
+    showImage(currentIndex);
+
+    setInterval(() => {
+      nextImage();
+    }, 5000); // Cambia de imagen cada 5 segundos
+  });
+
+  function showImage(index) {
+    images.forEach((img, i) => {
+      img.classList.toggle("hidden", i !== index);
+    });
+  }
+
+  function nextImage() {
+    currentIndex = (currentIndex + 1) % images.length;
+    showImage(currentIndex);
+  }
+
+  function prevImage() {
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    showImage(currentIndex);
+  }
+</script>
 
 <a
   href={url}
   target="_blank"
   class="sm:py-5 py-10 flex flex-col sm:flex-row gap-6 group-hover:opacity-60 hover:!opacity-100 transition-opacity"
 >
-  <div class="h-full bg-gray-700 rounded-lg aspect-video sm:h-[150px]">
-    <Image
-      width={1920}
-      height={1080}
-      src={image}
-      alt={title}
-      class="w-full h-full object-cover rounded-lg aspect-video"
-    />
-  </div>
-  <div>
-    <div class="flex items-center gap-1 mb-2">
-      <h2 class="font-medium">{title}</h2>
-      <span class="opacity-60">· {year}</span>
+  <!-- 🔹 Carrusel de imágenes -->
+  <div class="carousel-container">
+    <button class="carousel-button prev" onclick="prevImage()">❮</button>
+    <div class="carousel">
+      {
+        images.map((img, index) => (
+          <Image
+            width={1920}
+            height={1080}
+            src={img}
+            alt={title}
+            class={`carousel-image ${index === 0 ? 'visible' : 'hidden'}`}
+          />
+        ))
+      }
     </div>
-    <div class="opacity-60">
+    <button class="carousel-button next" onclick="nextImage()">❯</button>
+  </div>
+
+  <!-- 🔹 Información del Proyecto -->
+  <div class="project-info">
+    <div class="title-container">
+      <h2>{title}</h2>
+      <span class="year">{year}</span>
+    </div>
+    <div class="description">
       <Fragment set:html={htmlDescription} />
     </div>
   </div>
 </a>
+
+<style>
+  /* 🔹 Contenedor del Carrusel */
+  .carousel-container {
+    position: relative;
+    width: 100%;
+    max-width: 400px; /* Tamaño base para móviles */
+    height: 250px;
+    overflow: hidden;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 🔹 Imágenes del Carrusel */
+  .carousel {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .carousel-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out;
+  }
+
+  .visible {
+    opacity: 1;
+  }
+
+  .hidden {
+    opacity: 0;
+  }
+
+  /* 🔹 Botones de Navegación */
+  .carousel-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    /* background: rgba(0, 0, 0, 0.5); */
+    color: white;
+    border: none;
+    padding: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background 0.3s ease-in-out;
+  }
+
+  .carousel-button:hover {
+    background: rgba(0, 0, 0, 0.8);
+  }
+
+  .prev {
+    left: 10px;
+  }
+
+  .next {
+    right: 10px;
+  }
+
+  /* 🔹 Información del Proyecto */
+  .project-info {
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .title-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: bold;
+  }
+
+  .year {
+    opacity: 0.6;
+  }
+
+  .description {
+    opacity: 0.6;
+  }
+
+  /* 🔹 Escritorio */
+  @media (min-width: 768px) {
+    .carousel-container {
+      max-width: 600px; /* Tamaño más grande en desktop */
+      height: 350px;
+    }
+
+    .carousel-button {
+      font-size: 24px;
+      padding: 12px;
+    }
+
+    .project-info {
+      margin-left: 40px;
+    }
+  }
+</style>
