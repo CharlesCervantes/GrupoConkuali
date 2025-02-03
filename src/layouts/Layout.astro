@@ -58,6 +58,7 @@ const { seo } = Astro.props;
     <meta property="og:title" content={seo.title} />
     <meta property="og:description" content={seo.description} />
     <meta property="og:image" content={seo.image} />
+    <link rel="stylesheet" href="/src/styles/global.css">
   </head>
 
   <body>
@@ -77,15 +78,7 @@ const { seo } = Astro.props;
           <ul class="hidden sm:flex sm:items-center sm:gap-2">
             {
               navBarLinks.map((link) => (
-                <li>
-                  <a
-                    class="group px-4 py-2 rounded-lg hover:bg-gray-bg opacity-60 hover:opacity-100 transition-all"
-                    href={link.url}
-                    target={link.external ? "_blank" : "_self"}
-                  >
-                    {link.title}
-                  </a>
-                </li>
+              <li><a href={link.url}>{link.title}</a></li>
               ))
             }
           </ul>
@@ -129,27 +122,6 @@ const { seo } = Astro.props;
       </div>
     </header>
 
-    <!-- 🔹 HERO SECCIÓN CON EFECTO PARALLAX -->
-    <div class="hero">
-      <div class="hero-container">  <!-- Contenedor con el mismo ancho que el header -->
-        <div class="page-title">
-          <h1>Nuestra empresa</h1>
-        </div>
-    
-        <div class="hero-content">
-          <p>
-            <strong>GRUPO CONKUALI</strong> es una constructora de Monterrey, Nuevo León, especializada en proyectos residenciales, 
-            comerciales, industriales y de mantenimiento. Garantizamos alta calidad y soluciones que cumplen con las 
-            necesidades de clientes e inversionistas.
-          </p>
-    
-          <div class="hero-button">
-            <a href="/nosotros" class="cta-button">CONSTRUCTORA</a>
-          </div>
-        </div>
-      </div>
-    </div>    
-
     <!-- 🔹 CONTENIDO PRINCIPAL -->
     <main class="content">
       <slot />
@@ -163,138 +135,3 @@ const { seo } = Astro.props;
   </body>
 </html>
 
-<style is:global>
-  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
-
-/* 🔹 Estilos Globales */
-html {
-  font-family: "Inter", sans-serif;
-  background: #000;
-  color: white;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* 🔹 HEADER */
-.header {
-  position: absolute; /* Para que esté sobre la imagen */
-  width: 100%;
-  top: 0;
-  left: 0;
-  z-index: 1000;
-  background: transparent; /* Fondo transparente */
-  transition: background 0.3s ease-in-out;
-}
-
-/* 🔹 Contenedor del Header */
-.header-container {
-  padding: 16px 24px;
-  max-width: 1280px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-
-/* 🔹 HERO CON EFECTO PARALLAX */
-.hero {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  background-image: url('/fondoCasa.png');
-  /* background-image: url('/FondoEdificios.webp'); */
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed; /* Efecto parallax */
-  display: flex;
-  align-items: flex-start;
-  padding: 20px;
-}
-
-.hero-container {
-  max-width: 1280px; /* Igual que el header */
-  width: 100%;
-  margin: 0 auto; /* Centrarlo */
-  padding: 0 24px; /* Espaciado lateral */
-}
-
-.page-title {
-    width: 100%;
-    text-align: left;
-    font-size: 3rem;
-    font-weight: bold;
-    color: white;
-    margin-top: 120px;
-    text-transform: uppercase;
-  }
-
-  @media (max-width: 768px) {
-    .page-title {
-      width: 100%;
-      text-align: left;
-      font-size: 2rem;
-      margin-top: 100px;
-      margin-bottom: 10px;
-    }
-  }
-
-/* 🔹 Texto dentro del Hero */
-.hero-content {
-  max-width: 800px;
-  border-radius: 10px;
-  text-align: left;
-}
-
-.hero-button {
-  width: 100%;
-  display: flex;
-  justify-content: flex-start; 
-  margin-top: 20px;
-}
-
-@media (max-width: 768px) {
-  .hero-button {
-    justify-content: center; /* Centrar el botón */
-  }
-}
-
-.cta-button {
-  display: inline-block;
-  background: #3d4f53;
-  color: white;
-  padding: 12px 24px;
-  text-decoration: none;
-  border-radius: 5px;
-  font-weight: bold;
-}
-
-.cta-button:hover {
-  background: black;
-  color: white;
-  transition: 0.3s;
-}
-
-/* 🔹 CONTENIDO PRINCIPAL */
-.content {
-  background: #f5f5f5;
-  color: black;
-  padding: 60px 20px;
-}
-
-/* 🔹 FOOTER */
-.footer {
-  text-align: center;
-  padding: 20px;
-  background: #111;
-}
-
-</style>
