@@ -1,8 +1,9 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Hero from "../pages/blog/Hero.astro";
-import Nosotros from "./blog/Nosotros.astro";
-import Proyectos from './blog/Proyectos.astro';
+import Hero from "./Sections/Hero.astro";
+import Nosotros from "./Sections/Nosotros.astro";
+import Proyectos from './Sections/Proyectos.astro';
+import Servicios from './Sections/Servicios.astro'
 
 const seo = {
   title: "Grupo Conkuali - Construcción de Calidad",
@@ -15,6 +16,7 @@ console.log("✅ index.astro se está ejecutando");
 <Layout seo={seo}>
   <Hero id="hero" />
   <Nosotros id="nosotros" />
+  <Servicios id="servicios" />
   <Proyectos id="proyectos" />
 </Layout>
 

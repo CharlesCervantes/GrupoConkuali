@@ -41,7 +41,7 @@ export const navBarLinks: NavBarLink[] = [
 export const socialLinks: SocialLink[] = [
   {
     title: "GitHub",
-    url: "https://github.com/TimWitzdam",
+    url: "#",
     icon: "mdi:github",
     external: true,
   },
@@ -97,8 +97,8 @@ export const projectsPageContent: ProjectPageContent = {
       title: "Proyecto 2",
       description: "Descripción del segundo proyecto.",
       images: [
-        "/proyectos/proyecto2-1.jpg",
-        "/proyectos/proyecto2-2.jpg"
+        "/fondoCasa.png",
+        "/FondoEdificios.webp",
       ],
       year: "2023",
     }

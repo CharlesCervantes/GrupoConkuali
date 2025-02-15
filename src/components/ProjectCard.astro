@@ -2,53 +2,108 @@
 import { Image } from "astro:assets";
 import type { Project } from "../types/config";
 import { marked } from "marked";
-import { Carousel } from '@mantine/carousel'
 
 type Props = Project;
 
 const { title, description, images, year, url } = Astro.props;
+// Generamos un ID único para cada instancia del carrusel
+const carouselId = `carousel-${Math.random().toString(36).substr(2, 9)}`;
 
 const htmlDescription = marked.parse(description);
 ---
 
 <script>
-  let currentIndex = 0;
-  let images: any[] | NodeListOf<Element> = [];
+  class Carousel {
+    private currentIndex: number;
+    private images: NodeListOf<Element>;
+    private interval: number | null;
+    private id: string;
 
+    constructor(carouselId: string) {
+      this.id = carouselId;
+      this.currentIndex = 0;
+      this.interval = null;
+      this.images = document.querySelectorAll(`[data-carousel="${this.id}"] .carousel-image`);
+      
+      this.init();
+    }
+
+    private showImage(index: number): void {
+      this.images.forEach((img, i) => {
+        if (i === index) {
+          img.classList.remove("hidden");
+          img.classList.add("visible");
+        } else {
+          img.classList.add("hidden");
+          img.classList.remove("visible");
+        }
+      });
+    }
+
+    public next(): void {
+      this.currentIndex = (this.currentIndex + 1) % this.images.length;
+      this.showImage(this.currentIndex);
+    }
+
+    public prev(): void {
+      this.currentIndex = (this.currentIndex - 1 + this.images.length) % this.images.length;
+      this.showImage(this.currentIndex);
+    }
+
+    private init(): void {
+      this.showImage(this.currentIndex);
+      
+      if (this.interval) {
+        clearInterval(this.interval);
+      }
+      
+      this.interval = setInterval(() => this.next(), 5000);
+    }
+  }
+
+  // Inicializar todos los carruseles cuando el DOM esté listo
   document.addEventListener("DOMContentLoaded", () => {
-    images = document.querySelectorAll(".carousel-image");
-    showImage(currentIndex);
+    const carousels = new Map<string, Carousel>();
+    
+    document.querySelectorAll("[data-carousel]").forEach((container) => {
+      const id = container.getAttribute("data-carousel");
+      if (id) {
+        carousels.set(id, new Carousel(id));
+      }
+    });
 
-    setInterval(() => {
-      nextImage();
-    }, 5000); // Cambia de imagen cada 5 segundos
+    // Exponer las funciones de navegación al scope global
+    window.carouselActions = {
+      next: (id: string) => carousels.get(id)?.next(),
+      prev: (id: string) => carousels.get(id)?.prev()
+    };
   });
 
-  function showImage(index) {
-    images.forEach((img, i) => {
-      img.classList.toggle("hidden", i !== index);
-    });
-  }
-
-  function nextImage() {
-    currentIndex = (currentIndex + 1) % images.length;
-    showImage(currentIndex);
-  }
-
-  function prevImage() {
-    currentIndex = (currentIndex - 1 + images.length) % images.length;
-    showImage(currentIndex);
+  // Tipos globales
+  declare global {
+    interface Window {
+      carouselActions: {
+        next: (id: string) => void;
+        prev: (id: string) => void;
+      };
+    }
   }
 </script>
 
 <a
   href={url}
   target="_blank"
+  rel="noopener noreferrer"
   class="sm:py-5 py-10 flex flex-col sm:flex-row gap-6 group-hover:opacity-60 hover:!opacity-100 transition-opacity"
 >
-  <!-- 🔹 Carrusel de imágenes -->
-  <div class="carousel-container">
-    <button class="carousel-button prev" onclick="prevImage()">❮</button>
+  <div class="carousel-container" data-carousel={carouselId}>
+    <button 
+      class="carousel-button prev" 
+      onclick={`window.carouselActions.prev('${carouselId}')`}
+      aria-label="Previous image"
+    >
+      ❮
+    </button>
     <div class="carousel">
       {
         images.map((img, index) => (
@@ -56,16 +111,21 @@ const htmlDescription = marked.parse(description);
             width={1920}
             height={1080}
             src={img}
-            alt={title}
-            class={`carousel-image ${index === 0 ? 'visible' : 'hidden'}`}
+            alt={`${title} - image ${index + 1}`}
+            class={`carousel-image ${index === 0 ? "visible" : "hidden"}`}
           />
         ))
       }
     </div>
-    <button class="carousel-button next" onclick="nextImage()">❯</button>
+    <button 
+      class="carousel-button next" 
+      onclick={`window.carouselActions.next('${carouselId}')`}
+      aria-label="Next image"
+    >
+      ❯
+    </button>
   </div>
 
-  <!-- 🔹 Información del Proyecto -->
   <div class="project-info">
     <div class="title-container">
       <h2>{title}</h2>
@@ -78,108 +138,112 @@ const htmlDescription = marked.parse(description);
 </a>
 
 <style>
-  /* 🔹 Contenedor del Carrusel */
+  /* Los estilos se mantienen igual */
+  .project-card {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 2rem 0;
+  }
+
+  .carousel-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+  }
+
   .carousel-container {
     position: relative;
     width: 100%;
-    max-width: 400px; /* Tamaño base para móviles */
-    height: 250px;
+    max-width: 800px;
+    height: 450px;
     overflow: hidden;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
 
-  /* 🔹 Imágenes del Carrusel */
   .carousel {
-    display: flex;
+    position: relative;
     width: 100%;
     height: 100%;
-    justify-content: center;
-    align-items: center;
   }
 
   .carousel-image {
+    position: absolute;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    position: absolute;
-    opacity: 0;
     transition: opacity 0.8s ease-in-out;
   }
 
   .visible {
     opacity: 1;
+    z-index: 1;
   }
 
   .hidden {
     opacity: 0;
+    z-index: 0;
   }
 
-  /* 🔹 Botones de Navegación */
   .carousel-button {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    /* background: rgba(0, 0, 0, 0.5); */
+    background: rgba(0, 0, 0, 0.5);
     color: white;
     border: none;
-    padding: 8px;
-    font-size: 18px;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
     cursor: pointer;
     border-radius: 50%;
-    transition: background 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
   }
 
   .carousel-button:hover {
     background: rgba(0, 0, 0, 0.8);
+    transform: translateY(-50%) scale(1.1);
   }
 
   .prev {
-    left: 10px;
+    left: 20px;
   }
 
   .next {
-    right: 10px;
+    right: 20px;
   }
 
-  /* 🔹 Información del Proyecto */
   .project-info {
-    margin-left: 20px;
+    width: 100%;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    padding: 0 1rem;
   }
 
   .title-container {
     display: flex;
     align-items: center;
-    gap: 5px;
-    font-weight: bold;
+    justify-content: center;
+    gap: 0.5rem;
   }
 
-  .year {
-    opacity: 0.6;
-  }
-
-  .description {
-    opacity: 0.6;
-  }
-
-  /* 🔹 Escritorio */
-  @media (min-width: 768px) {
+  @media (max-width: 768px) {
     .carousel-container {
-      max-width: 600px; /* Tamaño más grande en desktop */
-      height: 350px;
+      max-width: 100%;
+      height: 300px;
     }
 
     .carousel-button {
-      font-size: 24px;
-      padding: 12px;
-    }
-
-    .project-info {
-      margin-left: 40px;
+      width: 36px;
+      height: 36px;
+      font-size: 18px;
     }
   }
 </style>

@@ -1,0 +1,82 @@
+---
+import ServiceCard from '../../components/ServiceCard.astro';
+
+export interface Props {
+    id?: string;
+}
+
+const {id} = Astro.props;
+
+const services = [
+  {
+    number: "01",
+    title: "Obra Civil.",
+    highlight: "Civil"
+  },
+  {
+    number: "02",
+    title: "Estructura Metálica.",
+    highlight: "Metálica"
+  },
+  {
+    number: "03",
+    title: "Instalación de plafones interiores y exteriores.",
+    highlight: "plafones"
+  },
+  {
+    number: "04",
+    title: "Aplanados interiores y exteriores.",
+    highlight: "Aplanados"
+  },
+  {
+    number: "05",
+    title: "Instalación de recubrimientos en piso y muros, interiores y exteriores.",
+    highlight: "recubrimientos"
+  },
+  {
+    number: "06",
+    title: "Instalaciones hidráulicas y sanitarias.",
+    highlight: "hidráulicas"
+  },
+  {
+    number: "07",
+    title: "Instalaciones eléctricas. (Baja, Media y Alta Tensión)",
+    highlight: "eléctricas"
+  },
+  {
+    number: "08",
+    title: "Mantenimiento residencial, comercial e industrial.",
+    highlight: "Mantenimiento"
+  }
+];
+---
+
+<section id={id} class="mt-10 max-w-4xl mx-auto px-6 sectionClass">
+  <h1 class="font-bold text-3xl mb-1 text-white">Servicios</h1>
+  <p class="opacity-60 mb-10 text-white">Nuestros servicios</p>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    {services.map(service => (
+      <ServiceCard {...service} />
+    ))}
+  </div>
+</section>
+
+<style>
+  .sectionClass {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    background-image: url('/fondoCasa.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+
+</style>
