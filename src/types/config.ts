@@ -72,10 +72,11 @@ export type AboutPageContent = {
 export type Project = {
   title: string;
   description: string;
-  image: string;
+  images: string[];
   year: string;
-  url: string;
+  url?: string;
 };
+
 
 export type ProjectPageContent = {
   seo: SEOInfo;

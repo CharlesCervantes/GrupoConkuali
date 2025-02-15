@@ -1,0 +1,58 @@
+---
+interface Props {
+  number: string;
+  title: string;
+  highlight?: string;
+}
+
+const { number, title, highlight } = Astro.props;
+
+// Separar el título en partes basado en la palabra resaltada
+const parts = highlight 
+  ? title.split(new RegExp(`(${highlight})`, 'i'))
+  : [title];
+---
+
+<div class="service-card">
+  <span class="number">{number}</span>
+  <h3 class="title">
+    {parts.map((part) => 
+      part.toLowerCase() === highlight?.toLowerCase() 
+        ? <span class="highlight">{part}</span>
+        : part
+    )}
+  </h3>
+</div>
+
+<style>
+  .service-card {
+    background-color: rgba(51, 51, 51, 0.95);
+    padding: 1.5rem;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.3s ease;
+  }
+
+  .service-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fff;
+    opacity: 0.8;
+  }
+
+  .title {
+    color: #fff;
+    font-size: 1.1rem;
+    line-height: 1.4;
+  }
+
+  .highlight {
+    color: #b7dcfa;
+  }
+</style>

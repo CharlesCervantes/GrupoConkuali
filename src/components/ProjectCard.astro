@@ -1,36 +1,249 @@
 ---
 import { Image } from "astro:assets";
 import type { Project } from "../types/config";
-import {marked} from "marked"
+import { marked } from "marked";
 
 type Props = Project;
 
-const { title, description, image, year, url } = Astro.props;
+const { title, description, images, year, url } = Astro.props;
+// Generamos un ID único para cada instancia del carrusel
+const carouselId = `carousel-${Math.random().toString(36).substr(2, 9)}`;
 
-const htmlDescription = marked.parse(description)
+const htmlDescription = marked.parse(description);
 ---
+
+<script>
+  class Carousel {
+    private currentIndex: number;
+    private images: NodeListOf<Element>;
+    private interval: number | null;
+    private id: string;
+
+    constructor(carouselId: string) {
+      this.id = carouselId;
+      this.currentIndex = 0;
+      this.interval = null;
+      this.images = document.querySelectorAll(`[data-carousel="${this.id}"] .carousel-image`);
+      
+      this.init();
+    }
+
+    private showImage(index: number): void {
+      this.images.forEach((img, i) => {
+        if (i === index) {
+          img.classList.remove("hidden");
+          img.classList.add("visible");
+        } else {
+          img.classList.add("hidden");
+          img.classList.remove("visible");
+        }
+      });
+    }
+
+    public next(): void {
+      this.currentIndex = (this.currentIndex + 1) % this.images.length;
+      this.showImage(this.currentIndex);
+    }
+
+    public prev(): void {
+      this.currentIndex = (this.currentIndex - 1 + this.images.length) % this.images.length;
+      this.showImage(this.currentIndex);
+    }
+
+    private init(): void {
+      this.showImage(this.currentIndex);
+      
+      if (this.interval) {
+        clearInterval(this.interval);
+      }
+      
+      this.interval = setInterval(() => this.next(), 5000);
+    }
+  }
+
+  // Inicializar todos los carruseles cuando el DOM esté listo
+  document.addEventListener("DOMContentLoaded", () => {
+    const carousels = new Map<string, Carousel>();
+    
+    document.querySelectorAll("[data-carousel]").forEach((container) => {
+      const id = container.getAttribute("data-carousel");
+      if (id) {
+        carousels.set(id, new Carousel(id));
+      }
+    });
+
+    // Exponer las funciones de navegación al scope global
+    window.carouselActions = {
+      next: (id: string) => carousels.get(id)?.next(),
+      prev: (id: string) => carousels.get(id)?.prev()
+    };
+  });
+
+  // Tipos globales
+  declare global {
+    interface Window {
+      carouselActions: {
+        next: (id: string) => void;
+        prev: (id: string) => void;
+      };
+    }
+  }
+</script>
 
 <a
   href={url}
   target="_blank"
+  rel="noopener noreferrer"
   class="sm:py-5 py-10 flex flex-col sm:flex-row gap-6 group-hover:opacity-60 hover:!opacity-100 transition-opacity"
 >
-  <div class="h-full bg-gray-700 rounded-lg aspect-video sm:h-[150px]">
-    <Image
-      width={1920}
-      height={1080}
-      src={image}
-      alt={title}
-      class="w-full h-full object-cover rounded-lg aspect-video"
-    />
-  </div>
-  <div>
-    <div class="flex items-center gap-1 mb-2">
-      <h2 class="font-medium">{title}</h2>
-      <span class="opacity-60">· {year}</span>
+  <div class="carousel-container" data-carousel={carouselId}>
+    <button 
+      class="carousel-button prev" 
+      onclick={`window.carouselActions.prev('${carouselId}')`}
+      aria-label="Previous image"
+    >
+      ❮
+    </button>
+    <div class="carousel">
+      {
+        images.map((img, index) => (
+          <Image
+            width={1920}
+            height={1080}
+            src={img}
+            alt={`${title} - image ${index + 1}`}
+            class={`carousel-image ${index === 0 ? "visible" : "hidden"}`}
+          />
+        ))
+      }
     </div>
-    <div class="opacity-60">
+    <button 
+      class="carousel-button next" 
+      onclick={`window.carouselActions.next('${carouselId}')`}
+      aria-label="Next image"
+    >
+      ❯
+    </button>
+  </div>
+
+  <div class="project-info">
+    <div class="title-container">
+      <h2>{title}</h2>
+      <span class="year">{year}</span>
+    </div>
+    <div class="description">
       <Fragment set:html={htmlDescription} />
     </div>
   </div>
 </a>
+
+<style>
+  /* Los estilos se mantienen igual */
+  .project-card {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 2rem 0;
+  }
+
+  .carousel-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+  }
+
+  .carousel-container {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    height: 450px;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .carousel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .carousel-image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.8s ease-in-out;
+  }
+
+  .visible {
+    opacity: 1;
+    z-index: 1;
+  }
+
+  .hidden {
+    opacity: 0;
+    z-index: 0;
+  }
+
+  .carousel-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.3s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+  }
+
+  .carousel-button:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  .prev {
+    left: 20px;
+  }
+
+  .next {
+    right: 20px;
+  }
+
+  .project-info {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 1rem;
+  }
+
+  .title-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .carousel-container {
+      max-width: 100%;
+      height: 300px;
+    }
+
+    .carousel-button {
+      width: 36px;
+      height: 36px;
+      font-size: 18px;
+    }
+  }
+</style>

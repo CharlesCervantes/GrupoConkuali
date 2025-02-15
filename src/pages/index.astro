@@ -1,17 +1,22 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Hero from "../pages/blog/Hero.astro";
-import Nosotros from "./blog/nosotros.astro";
+import Hero from "./Sections/Hero.astro";
+import Nosotros from "./Sections/Nosotros.astro";
+import Proyectos from './Sections/Proyectos.astro';
+import Servicios from './Sections/Servicios.astro'
 
 const seo = {
   title: "Grupo Conkuali - Construcción de Calidad",
   description: "Especialistas en construcción residencial, comercial e industrial en Monterrey.",
   image: "/imagen-og.jpg"
 };
-
+console.log("✅ index.astro se está ejecutando");
 ---
 
 <Layout seo={seo}>
   <Hero id="hero" />
-  <Nosotros id="nosotros">
+  <Nosotros id="nosotros" />
+  <Servicios id="servicios" />
+  <Proyectos id="proyectos" />
 </Layout>
+
