@@ -7,7 +7,7 @@ type Props = Project;
 
 const { title, description, images, year, url } = Astro.props;
 // Generamos un ID único para cada instancia del carrusel
-const carouselId = `carousel-${Math.random().toString(36).substr(2, 9)}`;
+const carouselId = `carousel-${Math.random().toString(36).slice(2, 11)}`;
 
 const htmlDescription = marked.parse(description);
 ---
@@ -16,7 +16,7 @@ const htmlDescription = marked.parse(description);
   class Carousel {
     private currentIndex: number;
     private images: NodeListOf<Element>;
-    private interval: number | null;
+    private interval: ReturnType<typeof setInterval> | null;
     private id: string;
 
     constructor(carouselId: string) {
