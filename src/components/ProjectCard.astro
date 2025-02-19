@@ -73,8 +73,8 @@ const htmlDescription = marked.parse(description);
 
       const container = document.querySelector(`[data-carousel="${this.id}"]`);
       if (container) {
-        container.addEventListener("touchstart", (e) => this.handleTouchStart(e));
-        container.addEventListener("touchend", (e) => this.handleTouchEnd(e));
+        container.addEventListener("touchstart", (e) => this.handleTouchStart(e as TouchEvent));
+        container.addEventListener("touchend", (e) => this.handleTouchEnd(e as TouchEvent));
       }
     }
   }
