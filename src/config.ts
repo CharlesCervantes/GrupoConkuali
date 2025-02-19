@@ -82,25 +82,26 @@ export const projectsPageContent: ProjectPageContent = {
     description: "Check out what I've been working on.",
     image: identity.logo,
   },
-  subtitle: "Check out what I've been working on.",
+  subtitle: "",
   projects: [
     {
-      title: "Proyecto 1",
-      description: "Descripción del proyecto.",
+      title: "Torre Arena Living",
+      description: "El proyecto Torre Arena Living, situado en la zona centro de Monterrey, Nuevo León, incluyó nuestra participación en la administración y supervisión de albañilería, instalaciones eléctricas de diversas tensiones y acabados, asegurando altos estándares de calidad en su ejecución.",
       images: [
-        "/fondoCasa.png",
+        "/ImagenesProyectos/1.jpeg",
         "/FondoEdificios.webp",
       ], // Ahora es un array
-      year: "2024",
+      year: "2023 | Monterrey, Nuevo León.",
     },
+    // -------------------------------------
     {
-      title: "Proyecto 2",
-      description: "Descripción del segundo proyecto.",
+      title: "Torre UNA",
+      description: "Ubicados en la zona centro de Monterrey, Nuevo León, nos especializamos en albañilería, muros perimetrales con sistema Hebel, muros interiores con tablaroca y firmes de nivelación. Contamos con amplia experiencia en la supervisión y administración de los trabajos de los contratistas involucrados en cada proyecto.",
       images: [
         "/fondoCasa.png",
         "/FondoEdificios.webp",
       ],
-      year: "2023",
+      year: "2023 | Monterrey, Nuevo León.",
     }
   ],
 };

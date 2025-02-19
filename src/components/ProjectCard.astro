@@ -7,7 +7,7 @@ type Props = Project;
 
 const { title, description, images, year, url } = Astro.props;
 // Generamos un ID único para cada instancia del carrusel
-const carouselId = `carousel-${Math.random().toString(36).substr(2, 9)}`;
+const carouselId = `carousel-${Math.random().toString(36).slice(2, 11)}`;
 
 const htmlDescription = marked.parse(description);
 ---
@@ -16,13 +16,12 @@ const htmlDescription = marked.parse(description);
   class Carousel {
     private currentIndex: number;
     private images: NodeListOf<Element>;
-    private interval: number | null;
     private id: string;
+    private startX: number | null = null;
 
     constructor(carouselId: string) {
       this.id = carouselId;
       this.currentIndex = 0;
-      this.interval = null;
       this.images = document.querySelectorAll(`[data-carousel="${this.id}"] .carousel-image`);
       
       this.init();
@@ -50,14 +49,33 @@ const htmlDescription = marked.parse(description);
       this.showImage(this.currentIndex);
     }
 
+    private handleTouchStart(event: TouchEvent): void {
+      this.startX = event.touches[0].clientX;
+    }
+
+    private handleTouchEnd(event: TouchEvent): void {
+      if (!this.startX) return;
+
+      const endX = event.changedTouches[0].clientX;
+      const deltaX = this.startX - endX;
+
+      if (deltaX > 50) {
+        this.next();
+      } else if (deltaX < -50) {
+        this.prev();
+      }
+
+      this.startX = null;
+    }
+
     private init(): void {
       this.showImage(this.currentIndex);
-      
-      if (this.interval) {
-        clearInterval(this.interval);
+
+      const container = document.querySelector(`[data-carousel="${this.id}"]`);
+      if (container) {
+        container.addEventListener("touchstart", (e) => this.handleTouchStart(e));
+        container.addEventListener("touchend", (e) => this.handleTouchEnd(e));
       }
-      
-      this.interval = setInterval(() => this.next(), 5000);
     }
   }
 
@@ -138,7 +156,6 @@ const htmlDescription = marked.parse(description);
 </a>
 
 <style>
-  /* Los estilos se mantienen igual */
   .project-card {
     width: 100%;
     display: flex;
